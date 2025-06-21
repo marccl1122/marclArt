@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-primary-base: #0a0a12;
+  --color-primary-light: #12121d;
+  --color-primary-lighter: #1a1a2e;
+  
+  --color-accent-blue: #3da9fc;
+  --color-accent-purple: #7f5af0;
+  --color-accent-pink: #ff2a6d;
+  --color-accent-teal: #05d9e8;
+  
+  /* ... add all other theme variables */
+}
+
+/* Global styles using theme */
+body {
+  background-color: var(--color-primary-base);
+  color: white;
+  font-family: var(--font-sans);
+}
+
+.cyber-text {
+  font-family: var(--font-cyber);
+  color: var(--color-accent-blue);
+  text-shadow: var(--shadow-glow);
+}
