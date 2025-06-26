@@ -2,40 +2,41 @@ import { DefaultTheme } from 'styled-components'
 
 export const cyberpunkTheme: DefaultTheme = {
   colors: {
-    primary: {
-      base: '#0a0a12',       // Deep space black
-      light: '#12121d',      // Slightly lighter black
-      lighter: '#1a1a2e'     // Even lighter with blue tint
+    background: {
+      dark: '#0a1026',
+      glass: 'rgba(18, 24, 48, 0.7)',
+      primary: '#1a1a40',
+      secondary: '#23235b',
+      deep: '#1e2a78',
     },
     accent: {
-      blue: '#3da9fc',       // Electric blue
-      purple: '#7f5af0',     // Neon purple
-      pink: '#ff2a6d',       // Hot pink
-      teal: '#05d9e8'        // Cyber teal
+      blue: '#3da9fc',
+      purple: '#7f5af0',
+      cyan: '#05d9e8',
+      pink: '#ff2a6d',
     },
     text: {
-      primary: '#ffffff',    // Pure white
-      secondary: '#a1a1aa',  // Light gray
-      tertiary: '#71717a'    // Medium gray
+      main: '#fff',
+      secondary: '#a1a1aa',
+      muted: '#71717a',
     },
-    state: {
-      success: '#10b981',    // Emerald green
-      warning: '#f59e0b',    // Amber
-      error: '#ef4444'       // Red
-    }
+    glassBorder: 'rgba(127, 90, 240, 0.25)',
+    focus: '#05d9e8',
+    glow: '#3da9fc',
   },
   fonts: {
     cyber: '"Share Tech Mono", monospace',
     sans: '"Rajdhani", sans-serif',
-    mono: '"IBM Plex Mono", monospace'
+    mono: '"IBM Plex Mono", monospace',
   },
   shadows: {
     sm: '0 1px 3px rgba(127, 90, 240, 0.12)',
     md: '0 4px 6px rgba(127, 90, 240, 0.15)',
     lg: '0 10px 15px rgba(127, 90, 240, 0.2)',
     xl: '0 20px 25px rgba(127, 90, 240, 0.25)',
-    glow: '0 0 10px rgba(61, 169, 252, 0.7), 0 0 20px rgba(127, 90, 240, 0.5)',
-    inner: 'inset 0 2px 4px rgba(127, 90, 240, 0.1)'
+    glow: '0 0 16px #3da9fc, 0 0 32px #7f5af0',
+    glass: '0 8px 32px 0 rgba(31, 38, 135, 0.25)',
+    inner: 'inset 0 2px 4px rgba(127, 90, 240, 0.1)',
   },
   spacing: {
     px: '1px',
@@ -81,7 +82,7 @@ export const cyberpunkTheme: DefaultTheme = {
     xl: '0.75rem',
     '2xl': '1rem',
     '3xl': '1.5rem',
-    full: '9999px'
+    full: '9999px',
   },
   breakpoints: {
     sm: '640px',

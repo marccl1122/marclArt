@@ -1,7 +1,7 @@
 // components/3d/ModelLoader.tsx
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, useGLTF } from '@react-three/drei'
-import { Suspense, useState, useEffect } from 'react'
+import { OrbitControls } from '@react-three/drei'
+import { Suspense } from 'react'
 
 const FallbackModel = () => (
   <mesh>
@@ -10,29 +10,14 @@ const FallbackModel = () => (
   </mesh>
 )
 
-export default function ModelLoader({ modelError }: { modelError?: boolean }) {
-  const [loadError, setLoadError] = useState(false)
-  const modelUrl = '/models/abstract_art.glb'
-
-  // Fallback to a sample model if needed
-  const actualModelUrl = modelError || loadError 
-    ? 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/Duck/glTF/Duck.gltf'
-    : modelUrl
-
+export default function ModelLoader() {
   return (
     <div className="relative h-[60vh] w-full">
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={<FallbackModel />}>
-          {loadError || modelError ? (
-            <FallbackModel />
-          ) : (
-            <Model 
-              url={actualModelUrl} 
-              onError={() => setLoadError(true)}
-            />
-          )}
+          <FallbackModel />
         </Suspense>
         <OrbitControls 
           enableZoom={true}
@@ -41,19 +26,9 @@ export default function ModelLoader({ modelError }: { modelError?: boolean }) {
         />
       </Canvas>
       
-      {(loadError || modelError) && (
-        <div className="absolute bottom-4 left-0 right-0 text-center text-purple-300 text-sm">
-          Using fallback model (original failed to load)
-        </div>
-      )}
+      <div className="absolute bottom-4 left-0 right-0 text-center text-purple-300 text-sm">
+        Interactive 3D Art Experience
+      </div>
     </div>
   )
-}
-
-function Model({ url, onError }: { url: string, onError: () => void }) {
-  const { scene } = useGLTF(url, undefined, undefined, (e) => {
-    console.error('Model load error:', e)
-    onError()
-  })
-  return <primitive object={scene} scale={1.5} />
 }

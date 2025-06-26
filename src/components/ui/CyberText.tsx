@@ -25,21 +25,13 @@ export default function CyberText({
   return (
     <span className={`
       ${sizeClasses[size]}
-      font-mono
+      font-sora font-extrabold
       text-accent-blue
-      ${glow ? 'text-shadow-purple-glow' : ''}
-      relative
-      before:absolute 
-      before:-bottom-1 
-      before:left-0 
-      before:w-full 
-      before:h-0.5 
-      before:bg-gradient-to-r 
-      before:from-purple-500 
-      before:to-blue-500 
-      before:opacity-80
+      ${glow ? 'text-glow' : ''}
+      uppercase
+      tracking-widest
       ${className}
-    `}>
+    `} tabIndex={0}>
       {children}
     </span>
   )

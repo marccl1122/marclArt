@@ -58,7 +58,7 @@ export default function MasonryGrid({
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-pulse text-purple-400">Loading artworks...</div>
+        <div className="animate-pulse text-[var(--color-accent-blue)]">Loading artworks...</div>
       </div>
     )
   }
@@ -79,20 +79,20 @@ export default function MasonryGrid({
               transition={{ duration: 0.5 }}
               className="mb-6 group"
             >
-              <div className="relative overflow-hidden rounded-lg border border-purple-900/30 hover:border-purple-500/50 transition-colors">
+              <div className="relative overflow-hidden rounded-2xl glass-card shadow-glow border border-[var(--color-accent-blue)]/30 hover:scale-105 transition-transform duration-300">
                 <div className="aspect-square relative">
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 rounded-2xl"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
                 
-                <div className="p-4 bg-gray-900/80 backdrop-blur-sm">
-                  <CyberText className="text-xl mb-1">{item.title}</CyberText>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-400 mb-3">
+                <div className="p-4 bg-[var(--color-bg)]/80 backdrop-blur-md rounded-b-2xl">
+                  <CyberText className="text-xl mb-1 text-glow">{item.title}</CyberText>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-accent-blue)] mb-3">
                     <span>{item.year}</span>
                     <span>{item.medium}</span>
                     <span>{item.dimensions}</span>

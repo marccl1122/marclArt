@@ -30,16 +30,16 @@ export function Carousel({ collections }: CarouselProps) {
   return (
     <div className="space-y-8">
       {/* Collection Selector */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 justify-center mb-6">
         {collections.map((collection, index) => (
           <button
             key={collection.id}
             onClick={() => setCurrentCollectionIndex(index)}
-            className={`px-4 py-2 rounded-full text-sm uppercase tracking-wider transition-colors ${
+            className={`px-4 py-2 rounded-full text-sm uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-blue)] shadow-glow ${
               currentCollectionIndex === index
-                ? 'bg-purple-600 text-white'
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                ? 'bg-[var(--color-accent-blue)] text-white' : 'bg-[var(--color-bg)]/80 text-[var(--color-accent-blue)] hover:bg-[var(--color-accent-blue)]/30'
             }`}
+            tabIndex={0}
           >
             {collection.title}
           </button>
@@ -47,25 +47,25 @@ export function Carousel({ collections }: CarouselProps) {
       </div>
 
       {/* Images Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {collections[currentCollectionIndex].images.map((image) => (
           <motion.div
             key={image.id}
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.05 }}
             onClick={() => setCurrentImage(image)}
-            className="cursor-pointer relative aspect-square"
+            className="cursor-pointer relative aspect-square glass-card shadow-glow border border-[var(--color-accent-blue)]/30 overflow-hidden transition-transform duration-300"
           >
             <Image
               src={image.thumbnail}
               alt={image.title}
               fill
-              className="object-cover rounded-lg border border-gray-800 hover:border-purple-500 transition-colors"
+              className="object-cover rounded-2xl"
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 opacity-0 hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 opacity-0 hover:opacity-100 transition-opacity rounded-2xl">
               <div>
-                <CyberText className="text-sm">{image.title}</CyberText>
-                <p className="text-xs text-gray-300">{image.location}</p>
+                <CyberText className="text-sm text-glow">{image.title}</CyberText>
+                <p className="text-xs text-[var(--color-accent-blue)]">{image.location}</p>
               </div>
             </div>
           </motion.div>
@@ -88,7 +88,7 @@ export function Carousel({ collections }: CarouselProps) {
               className="max-w-6xl w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
+              <div className="relative aspect-video bg-[var(--color-bg)]/80 rounded-2xl overflow-hidden shadow-glow">
                 <Image
                   src={currentImage.fullSize}
                   alt={currentImage.title}
@@ -98,8 +98,8 @@ export function Carousel({ collections }: CarouselProps) {
                 />
               </div>
               <div className="mt-4 text-center">
-                <CyberText className="text-xl">{currentImage.title}</CyberText>
-                <p className="text-gray-400">{currentImage.location}</p>
+                <CyberText className="text-xl text-glow">{currentImage.title}</CyberText>
+                <p className="text-[var(--color-accent-blue)]">{currentImage.location}</p>
                 <GlowButton
                   onClick={() => setCurrentImage(null)}
                   className="mt-6 px-6 py-2"

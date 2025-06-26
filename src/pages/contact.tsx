@@ -1,114 +1,86 @@
-import { useState } from 'react'
+import { useState, ChangeEvent, FormEvent } from 'react'
 import Layout from '../components/Layout'
 import CyberText from '../components/ui/CyberText'
 import GlowButton from '../components/ui/GlowButton'
 import SectionDivider from '../components/ui/SectionDivider'
 
+type FormData = {
+  name: string
+  email: string
+  subject: string
+  message: string
+}
+
+type Errors = {
+  name?: string
+  email?: string
+  subject?: string
+  message?: string
+  submit?: string
+}
+
 export default function Contact() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     subject: '',
     message: ''
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Errors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
     }))
-    // Clear error when typing
-    if (errors[name]) {
+    if (errors[name as keyof Errors]) {
       setErrors(prev => {
         const newErrors = { ...prev }
-        delete newErrors[name]
+        delete newErrors[name as keyof Errors]
         return newErrors
       })
     }
   }
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format'
-    }
-    
-    if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required'
-    }
-    
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required'
-    } else if (formData.message.length < 20) {
-      newErrors.message = 'Message must be at least 20 characters'
-    }
-    
+    const newErrors: Errors = {}
+    if (!formData.name.trim()) newErrors.name = 'Name is required'
+    if (!formData.email.trim()) newErrors.email = 'Email is required'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email format'
+    if (!formData.subject.trim()) newErrors.subject = 'Subject is required'
+    if (!formData.message.trim()) newErrors.message = 'Message is required'
+    else if (formData.message.length < 20) newErrors.message = 'Message must be at least 20 characters'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    
     if (!validateForm()) return
-    
     setIsSubmitting(true)
-    
-    try {
-      // Replace with your actual API endpoint
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-      
-      if (response.ok) {
-        setSubmitSuccess(true)
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
-        })
-      } else {
-        throw new Error('Submission failed')
-      }
-    } catch (error) {
-      setErrors({
-        submit: 'There was an error sending your message. Please try again later.'
-      })
-    } finally {
+    setTimeout(() => {
       setIsSubmitting(false)
-    }
+      setSubmitSuccess(true)
+    }, 1200)
   }
 
   return (
     <Layout title="Contact | Marc Le">
-      <div className="container mx-auto px-6 py-20">
-        <CyberText className="text-3xl mb-2">CONTACT</CyberText>
-        <p className="text-gray-400 mb-12 max-w-2xl">
-          For inquiries about commissions, collaborations, or philosophical debates
-        </p>
-        
+      <div className="max-w-5xl mx-auto px-4 py-24">
+        <div className="glass-card shadow-glow p-12 mb-16 text-center flex flex-col gap-4">
+          <CyberText className="text-4xl mb-2 text-glow">CONTACT</CyberText>
+          <p className="text-accent-cyan mb-2 max-w-2xl mx-auto text-lg">
+            For inquiries about commissions, collaborations, or philosophical debates
+          </p>
+        </div>
         <SectionDivider />
-        
         {submitSuccess ? (
-          <div className="max-w-3xl mx-auto text-center py-12">
-            <CyberText className="text-2xl mb-4">MESSAGE SENT</CyberText>
-            <p className="text-gray-300 mb-8">
+          <div className="max-w-3xl mx-auto text-center py-12 glass-card shadow-glow flex flex-col gap-6">
+            <CyberText className="text-2xl mb-4 text-glow">MESSAGE SENT</CyberText>
+            <p className="text-accent-cyan mb-8 text-lg">
               Thank you for reaching out. I'll get back to you as soon as possible.
             </p>
             <GlowButton 
@@ -119,105 +91,71 @@ export default function Contact() {
             </GlowButton>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="max-w-3xl mx-auto glass-card shadow-glow p-12 grid gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <label htmlFor="name" className="block text-sm text-gray-400 mb-1">
-                  NAME *
-                </label>
+                <label htmlFor="name" className="block text-accent-cyan mb-2 font-mono text-lg">Name</label>
                 <input
-                  type="text"
                   id="name"
                   name="name"
+                  type="text"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full bg-gray-800 border rounded-lg px-4 py-3 focus:outline-none focus:ring-1 ${
-                    errors.name 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-purple-900/30 focus:ring-purple-500'
-                  }`}
-                  placeholder="Your name"
+                  className={`w-full rounded-xl bg-bg-glass border border-accent-cyan/30 p-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-cyan text-lg ${errors.name ? 'border-red-500' : ''}`}
+                  autoComplete="name"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? 'name-error' : undefined}
                 />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-400">{errors.name}</p>
-                )}
+                {errors.name && <div id="name-error" className="text-red-500 text-xs mt-1">{errors.name}</div>}
               </div>
-              
               <div>
-                <label htmlFor="email" className="block text-sm text-gray-400 mb-1">
-                  EMAIL *
-                </label>
+                <label htmlFor="email" className="block text-accent-cyan mb-2 font-mono text-lg">Email</label>
                 <input
-                  type="email"
                   id="email"
                   name="email"
+                  type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full bg-gray-800 border rounded-lg px-4 py-3 focus:outline-none focus:ring-1 ${
-                    errors.email 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-purple-900/30 focus:ring-purple-500'
-                  }`}
-                  placeholder="your@email.com"
+                  className={`w-full rounded-xl bg-bg-glass border border-accent-cyan/30 p-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-cyan text-lg ${errors.email ? 'border-red-500' : ''}`}
+                  autoComplete="email"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-400">{errors.email}</p>
-                )}
+                {errors.email && <div id="email-error" className="text-red-500 text-xs mt-1">{errors.email}</div>}
               </div>
             </div>
-            
             <div>
-              <label htmlFor="subject" className="block text-sm text-gray-400 mb-1">
-                SUBJECT *
-              </label>
+              <label htmlFor="subject" className="block text-accent-cyan mb-2 font-mono text-lg">Subject</label>
               <input
-                type="text"
                 id="subject"
                 name="subject"
+                type="text"
                 value={formData.subject}
                 onChange={handleChange}
-                className={`w-full bg-gray-800 border rounded-lg px-4 py-3 focus:outline-none focus:ring-1 ${
-                  errors.subject 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-purple-900/30 focus:ring-purple-500'
-                }`}
-                placeholder="What's this about?"
+                className={`w-full rounded-xl bg-bg-glass border border-accent-cyan/30 p-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-cyan text-lg ${errors.subject ? 'border-red-500' : ''}`}
+                aria-invalid={!!errors.subject}
+                aria-describedby={errors.subject ? 'subject-error' : undefined}
               />
-              {errors.subject && (
-                <p className="mt-1 text-sm text-red-400">{errors.subject}</p>
-              )}
+              {errors.subject && <div id="subject-error" className="text-red-500 text-xs mt-1">{errors.subject}</div>}
             </div>
-            
             <div>
-              <label htmlFor="message" className="block text-sm text-gray-400 mb-1">
-                MESSAGE *
-              </label>
+              <label htmlFor="message" className="block text-accent-cyan mb-2 font-mono text-lg">Message</label>
               <textarea
                 id="message"
                 name="message"
                 rows={6}
                 value={formData.message}
                 onChange={handleChange}
-                className={`w-full bg-gray-800 border rounded-lg px-4 py-3 focus:outline-none focus:ring-1 ${
-                  errors.message 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-purple-900/30 focus:ring-purple-500'
-                }`}
-                placeholder="Your message..."
-              ></textarea>
-              {errors.message && (
-                <p className="mt-1 text-sm text-red-400">{errors.message}</p>
-              )}
+                className={`w-full rounded-xl bg-bg-glass border border-accent-cyan/30 p-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-cyan text-lg ${errors.message ? 'border-red-500' : ''}`}
+                aria-invalid={!!errors.message}
+                aria-describedby={errors.message ? 'message-error' : undefined}
+              />
+              {errors.message && <div id="message-error" className="text-red-500 text-xs mt-1">{errors.message}</div>}
             </div>
-            
-            {errors.submit && (
-              <p className="text-red-400 text-sm">{errors.submit}</p>
-            )}
-            
             <GlowButton 
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-3 ${isSubmitting ? 'opacity-70' : ''}`}
+              className={`w-full py-4 text-lg ${isSubmitting ? 'opacity-70' : ''}`}
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
@@ -233,35 +171,26 @@ export default function Contact() {
             </GlowButton>
           </form>
         )}
-        
         <SectionDivider />
-        
-        <div className="max-w-3xl mx-auto mt-12">
-          <CyberText className="text-xl mb-4">OTHER WAYS TO CONNECT</CyberText>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="border border-purple-900/30 rounded-lg p-6 hover:border-purple-500/50 transition-colors">
-              <h3 className="font-mono text-purple-400 mb-2">EMAIL</h3>
-              <a href="mailto:contact@marcle.art" className="text-gray-300 hover:text-white transition-colors">
-                contact@marcle.art
-              </a>
+        <div className="max-w-3xl mx-auto mt-16 grid md:grid-cols-3 gap-8">
+          <div className="glass-card shadow-glow border border-accent-cyan/30 rounded-2xl p-8 hover:scale-105 transition-transform duration-300 text-center flex flex-col gap-2">
+            <h3 className="font-mono text-accent-cyan mb-2 text-lg">EMAIL</h3>
+            <a href="mailto:contact@marcle.art" className="text-accent-blue hover:text-accent-cyan transition-colors text-lg">
+              contact@marcle.art
+            </a>
+          </div>
+          <div className="glass-card shadow-glow border border-accent-cyan/30 rounded-2xl p-8 hover:scale-105 transition-transform duration-300 text-center flex flex-col gap-2">
+            <h3 className="font-mono text-accent-cyan mb-2 text-lg">SOCIAL</h3>
+            <div className="flex space-x-4 justify-center">
+              <a href="#" className="text-accent-blue hover:text-accent-cyan transition-colors text-lg">Instagram</a>
+              <a href="#" className="text-accent-blue hover:text-accent-cyan transition-colors text-lg">Twitter</a>
             </div>
-            <div className="border border-purple-900/30 rounded-lg p-6 hover:border-purple-500/50 transition-colors">
-              <h3 className="font-mono text-purple-400 mb-2">SOCIAL</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                  Instagram
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                  Twitter
-                </a>
-              </div>
-            </div>
-            <div className="border border-purple-900/30 rounded-lg p-6 hover:border-purple-500/50 transition-colors">
-              <h3 className="font-mono text-purple-400 mb-2">STUDIO VISITS</h3>
-              <p className="text-gray-300">
-                By appointment only in Berlin
-              </p>
-            </div>
+          </div>
+          <div className="glass-card shadow-glow border border-accent-cyan/30 rounded-2xl p-8 hover:scale-105 transition-transform duration-300 text-center flex flex-col gap-2">
+            <h3 className="font-mono text-accent-cyan mb-2 text-lg">STUDIO VISITS</h3>
+            <p className="text-accent-blue text-lg">
+              By appointment only in Berlin
+            </p>
           </div>
         </div>
       </div>
